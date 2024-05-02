@@ -33,4 +33,14 @@ public class CommentController {
     public ResponseEntity<ResponseObjectService> getComments(@RequestBody IdObjectEntity inputPostId) {
         return new ResponseEntity<ResponseObjectService>(commentService.getComments(inputPostId.getId()), HttpStatus.OK);
     }
+    
+    @DeleteMapping("/deletecomment/{commentId}/{postId}")
+    public ResponseEntity<ResponseObjectService> deleteComment(
+        @PathVariable("commentId") String commentId,
+        @PathVariable("postId") String postId
+    ) {
+        ResponseObjectService response = commentService.deleteComment(commentId, postId);
+        HttpStatus status = "success".equals(response.getStatus()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+        return new ResponseEntity<>(response, status);
+    }
 }

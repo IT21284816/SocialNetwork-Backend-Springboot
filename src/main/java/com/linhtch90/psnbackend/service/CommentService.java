@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.linhtch90.psnbackend.entity.CommentEntity;
 import com.linhtch90.psnbackend.entity.IdObjectEntity;
@@ -74,6 +75,47 @@ public class CommentService {
                 return responseObj;
             }
         }
+    }
+
+    public ResponseObjectService deleteComment(String commentId, String postId) {
+        ResponseObjectService responseObj = new ResponseObjectService();
+        
+        // Check if the comment exists
+        Optional<CommentEntity> optComment = commentRepo.findById(commentId);
+        if (optComment.isEmpty()) {
+            responseObj.setStatus("fail");
+            responseObj.setMessage("Comment not found: " + commentId);
+            responseObj.setPayload(null);
+            return responseObj;
+        }
+        
+        // Check if the post exists
+        Optional<PostEntity> optPost = postRepo.findById(postId);
+        if (optPost.isEmpty()) {
+            responseObj.setStatus("fail");
+            responseObj.setMessage("Post not found: " + postId);
+            responseObj.setPayload(null);
+            return responseObj;
+        }
+        
+        // Remove the comment from the post
+        PostEntity targetPost = optPost.get();
+        List<CommentEntity> commentList = targetPost.getComment();
+        commentList = commentList.stream()
+            .filter(comment -> !comment.getId().equals(commentId))
+            .collect(Collectors.toList());
+
+        targetPost.setComment(commentList);
+        
+        // Save the post and delete the comment
+        postService.updatePostByComment(targetPost);
+        commentRepo.deleteById(commentId);
+        
+        responseObj.setStatus("success");
+        responseObj.setMessage("Comment deleted successfully");
+        responseObj.setPayload(null);
+
+        return responseObj;
     }
 
 }
