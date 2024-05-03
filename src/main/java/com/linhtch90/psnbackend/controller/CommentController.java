@@ -53,4 +53,14 @@ public class CommentController {
         HttpStatus status = "success".equals(response.getStatus()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(response, status);
     }
+
+    @PutMapping("/updatecomment/{commentId}")
+    public ResponseEntity<ResponseObjectService> updateComment(
+        @PathVariable("commentId") String commentId,
+        @RequestBody CommentEntity updatedComment
+    ) {
+        ResponseObjectService response = commentService.updateComment(commentId, updatedComment);
+        HttpStatus status = "success".equals(response.getStatus()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+        return new ResponseEntity<>(response, status);
+    }
 }
