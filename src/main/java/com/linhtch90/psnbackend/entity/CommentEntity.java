@@ -25,4 +25,7 @@ public class CommentEntity {
     private String content;
 
     private Instant createdAt;
+
+    // Add updatedAt field
+    private Instant updatedAt; // Timestamp for the last update
 }
