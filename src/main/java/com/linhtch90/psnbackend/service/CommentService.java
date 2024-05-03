@@ -118,37 +118,25 @@ public class CommentService {
         return responseObj;
     }
 
-    public ResponseObjectService editComment(String commentId, String postId, String newContent) {
+    public ResponseObjectService getCommentById(String commentId) {
         ResponseObjectService responseObj = new ResponseObjectService();
 
-        // Check if the comment exists
-        Optional<CommentEntity> optComment = commentRepo.findById(commentId);
-        if (optComment.isEmpty()) {
+        // Attempt to find the comment by its ID
+        Optional<CommentEntity> existingComment = commentRepo.findById(commentId);
+        if (existingComment.isEmpty()) {
             responseObj.setStatus("fail");
             responseObj.setMessage("Comment not found: " + commentId);
             responseObj.setPayload(null);
-            return responseObj;
+            return responseObj; // Return a failure response
         }
 
-        // Check if the post exists
-        Optional<PostEntity> optPost = postRepo.findById(postId);
-        if (optPost.isEmpty()) {
-            responseObj.setStatus("fail");
-            responseObj.setMessage("Post not found: " + postId);
-            responseObj.setPayload(null);
-            return responseObj;
-        }
-
-        // Update the comment's content
-        CommentEntity existingComment = optComment.get();
-        existingComment.setContent(newContent);
-        commentRepo.save(existingComment);
-
+        // If found, return success with the comment content
+        CommentEntity comment = existingComment.get();
         responseObj.setStatus("success");
-        responseObj.setMessage("Comment updated successfully");
-        responseObj.setPayload(existingComment);
+        responseObj.setMessage("Comment found");
+        responseObj.setPayload(comment);
 
-        return responseObj;
+        return responseObj; // Return a success response with the comment
     }
 
 }

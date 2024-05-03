@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,13 +47,9 @@ public class CommentController {
         return new ResponseEntity<>(response, status);
     }
 
-    @PutMapping("/editcomment")
-    public ResponseEntity<ResponseObjectService> editComment(
-        @RequestParam("commentId") String commentId,
-        @RequestParam("postId") String postId,
-        @RequestParam("newContent") String newContent
-    ) {
-        ResponseObjectService response = commentService.editComment(commentId, postId, newContent);
+    @GetMapping("/comment/{commentId}") // Correct endpoint
+    public ResponseEntity<ResponseObjectService> getComment(@PathVariable String commentId) {
+        ResponseObjectService response = commentService.getCommentById(commentId);
         HttpStatus status = "success".equals(response.getStatus()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(response, status);
     }
