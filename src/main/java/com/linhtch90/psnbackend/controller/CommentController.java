@@ -12,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,6 +42,16 @@ public class CommentController {
         @PathVariable("postId") String postId
     ) {
         ResponseObjectService response = commentService.deleteComment(commentId, postId);
+        HttpStatus status = "success".equals(response.getStatus()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+        return new ResponseEntity<>(response, status);
+    }
+     @PutMapping("/editcomment")
+    public ResponseEntity<ResponseObjectService> editComment(
+        @RequestParam("commentId") String commentId,
+        @RequestParam("postId") String postId,
+        @RequestParam("newContent") String newContent
+    ) {
+        ResponseObjectService response = commentService.editComment(commentId, postId, newContent);
         HttpStatus status = "success".equals(response.getStatus()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(response, status);
     }
